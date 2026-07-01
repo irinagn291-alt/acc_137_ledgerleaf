@@ -225,6 +225,8 @@ private struct SummaryCard: View {
     }
 }
 
+#if DEBUG
 #Preview {
     InsightsView(dependencies: PreviewSupport.dependencies)
 }
+#endif

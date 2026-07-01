@@ -1,11 +1,10 @@
 import SwiftUI
 
-/// Settings: appearance, CSV export/share, reminder permission, sample data, and about/reset.
+/// Settings: appearance, CSV export/share, sample data, and about/reset.
 struct SettingsView: View {
     let dependencies: AppDependencies
     @State private var viewModel: SettingsViewModel
     @AppStorage("appearanceMode") private var appearanceModeRawValue = AppearanceMode.system.rawValue
-    @AppStorage("remindersEnabled") private var remindersEnabled = true
     @State private var isShareSheetPresented = false
     @State private var isResetConfirmationPresented = false
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = true
@@ -28,23 +27,6 @@ struct SettingsView: View {
                             Text(mode.displayName).tag(mode.rawValue)
                         }
                     }
-                }
-
-                Section("Reminders") {
-                    Toggle("Remind before charge", isOn: $remindersEnabled)
-                        .onChange(of: remindersEnabled) { _, isOn in
-                            Task {
-                                if isOn {
-                                    let granted = await viewModel.enableReminders()
-                                    if !granted { remindersEnabled = false }
-                                } else {
-                                    await viewModel.disableReminders()
-                                }
-                            }
-                        }
-                    Text("We'll remind you 2 days before a charge so you can cancel in time.")
-                        .font(.caption)
-                        .foregroundStyle(AppColor.secondary)
                 }
 
                 Section("Data") {
@@ -124,6 +106,8 @@ private extension Bundle {
     }
 }
 
+#if DEBUG
 #Preview {
     SettingsView(dependencies: PreviewSupport.dependencies)
 }
+#endif

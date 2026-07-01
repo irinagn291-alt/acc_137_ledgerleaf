@@ -5,8 +5,8 @@ import Foundation
 /// month-total header, upcoming charges, period/currency breakdowns, and the spend
 /// trend fully populated on first launch.
 ///
-/// Adds directly through the repository, bypassing the free-tier cap and reminder
-/// scheduling that apply to subscriptions entered by hand.
+/// Adds directly through the repository, bypassing the free-tier cap that applies
+/// to subscriptions entered by hand.
 @MainActor
 struct SeedSampleDataUseCase {
     private let repository: SubscriptionRepository

@@ -10,7 +10,6 @@ struct Subscription: Identifiable, Hashable, Sendable {
     var currencyCode: String
     var period: BillingPeriod
     var nextChargeDate: Date
-    var isReminderEnabled: Bool
     var notes: String
     let createdAt: Date
 
@@ -21,7 +20,6 @@ struct Subscription: Identifiable, Hashable, Sendable {
         currencyCode: String = "EUR",
         period: BillingPeriod,
         nextChargeDate: Date,
-        isReminderEnabled: Bool = true,
         notes: String = "",
         createdAt: Date = .now
     ) {
@@ -31,7 +29,6 @@ struct Subscription: Identifiable, Hashable, Sendable {
         self.currencyCode = currencyCode
         self.period = period
         self.nextChargeDate = nextChargeDate
-        self.isReminderEnabled = isReminderEnabled
         self.notes = notes
         self.createdAt = createdAt
     }

@@ -51,9 +51,9 @@ final class LeafListViewModel {
         }
     }
 
-    func delete(_ subscription: Subscription) async {
+    func delete(_ subscription: Subscription) {
         do {
-            try await deleteSubscription.execute(id: subscription.id)
+            try deleteSubscription.execute(id: subscription.id)
             load()
         } catch {
             errorMessage = error.localizedDescription

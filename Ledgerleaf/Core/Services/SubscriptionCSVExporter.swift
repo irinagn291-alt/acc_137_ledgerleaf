@@ -3,7 +3,7 @@ import Foundation
 /// Builds a CSV representation of subscriptions for the Settings export/share flow.
 struct SubscriptionCSVExporter: SubscriptionCSVExporting {
     func export(_ subscriptions: [Subscription]) -> String {
-        var rows = ["Name,Amount,Currency,Period,Next Charge,Reminder"]
+        var rows = ["Name,Amount,Currency,Period,Next Charge"]
 
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -14,8 +14,7 @@ struct SubscriptionCSVExporter: SubscriptionCSVExporting {
                 csvField("\(subscription.amount)"),
                 csvField(subscription.currencyCode),
                 csvField(subscription.period.displayName),
-                csvField(dateFormatter.string(from: subscription.nextChargeDate)),
-                csvField(subscription.isReminderEnabled ? "Yes" : "No")
+                csvField(dateFormatter.string(from: subscription.nextChargeDate))
             ]
             rows.append(fields.joined(separator: ","))
         }

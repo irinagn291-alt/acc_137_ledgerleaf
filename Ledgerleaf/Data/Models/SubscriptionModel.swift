@@ -11,7 +11,6 @@ final class SubscriptionModel {
     var currencyCode: String
     var periodRawValue: String
     var nextChargeDate: Date
-    var isReminderEnabled: Bool
     var notes: String
     var createdAt: Date
 
@@ -22,7 +21,6 @@ final class SubscriptionModel {
         currencyCode: String,
         periodRawValue: String,
         nextChargeDate: Date,
-        isReminderEnabled: Bool,
         notes: String,
         createdAt: Date
     ) {
@@ -32,7 +30,6 @@ final class SubscriptionModel {
         self.currencyCode = currencyCode
         self.periodRawValue = periodRawValue
         self.nextChargeDate = nextChargeDate
-        self.isReminderEnabled = isReminderEnabled
         self.notes = notes
         self.createdAt = createdAt
     }
@@ -47,7 +44,6 @@ extension SubscriptionModel {
             currencyCode: domain.currencyCode,
             periodRawValue: domain.period.rawValue,
             nextChargeDate: domain.nextChargeDate,
-            isReminderEnabled: domain.isReminderEnabled,
             notes: domain.notes,
             createdAt: domain.createdAt
         )
@@ -59,7 +55,6 @@ extension SubscriptionModel {
         currencyCode = domain.currencyCode
         periodRawValue = domain.period.rawValue
         nextChargeDate = domain.nextChargeDate
-        isReminderEnabled = domain.isReminderEnabled
         notes = domain.notes
     }
 
@@ -71,7 +66,6 @@ extension SubscriptionModel {
             currencyCode: currencyCode,
             period: BillingPeriod(rawValue: periodRawValue) ?? .monthly,
             nextChargeDate: nextChargeDate,
-            isReminderEnabled: isReminderEnabled,
             notes: notes,
             createdAt: createdAt
         )

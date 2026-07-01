@@ -90,7 +90,7 @@ struct LeafListView: View {
                             .onTapGesture { editingTarget = EditingTarget(subscription: subscription) }
                             .swipeActions(edge: .trailing) {
                                 Button(role: .destructive) {
-                                    Task { await viewModel.delete(subscription) }
+                                    viewModel.delete(subscription)
                                 } label: {
                                     Label("Delete", systemImage: "trash")
                                 }
@@ -151,6 +151,8 @@ private struct MonthTotalHeaderView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     LeafListView(dependencies: PreviewSupport.dependencies)
 }
+#endif

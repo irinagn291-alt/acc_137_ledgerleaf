@@ -1,7 +1,7 @@
 import Foundation
 
-/// Drives the spec's 4-screen, value-first onboarding: tease the total, add a first
-/// subscription, reveal the real load, then offer reminders.
+/// Drives the spec's 3-screen, value-first onboarding: tease the total, add a first
+/// subscription, then reveal the real load.
 @MainActor
 @Observable
 final class OnboardingViewModel {
@@ -10,21 +10,18 @@ final class OnboardingViewModel {
     var draftAmountText = ""
     var draftPeriod: BillingPeriod = .monthly
     var draftNextChargeDate: Date = Calendar.current.date(byAdding: .month, value: 1, to: .now) ?? .now
-    var wantsReminders = true
     var errorMessage: String?
     private(set) var isSaving = false
     private(set) var subscriptions: [Subscription] = []
 
-    let stepCount = 4
+    let stepCount = 3
 
     private let fetchSubscriptions: FetchSubscriptionsUseCase
     private let addSubscription: AddSubscriptionUseCase
-    private let reminderScheduler: ReminderScheduling
 
-    init(fetchSubscriptions: FetchSubscriptionsUseCase, addSubscription: AddSubscriptionUseCase, reminderScheduler: ReminderScheduling) {
+    init(fetchSubscriptions: FetchSubscriptionsUseCase, addSubscription: AddSubscriptionUseCase) {
         self.fetchSubscriptions = fetchSubscriptions
         self.addSubscription = addSubscription
-        self.reminderScheduler = reminderScheduler
     }
 
     var monthlyTotal: Decimal {
@@ -59,12 +56,11 @@ final class OnboardingViewModel {
             name: draftName,
             amount: amount,
             period: draftPeriod,
-            nextChargeDate: draftNextChargeDate,
-            isReminderEnabled: true
+            nextChargeDate: draftNextChargeDate
         )
 
         do {
-            try await addSubscription.execute(subscription)
+            try addSubscription.execute(subscription)
             HapticsService.totalIncremented()
             refreshSubscriptions()
             return true
@@ -72,9 +68,5 @@ final class OnboardingViewModel {
             errorMessage = error.localizedDescription
             return false
         }
-    }
-
-    func enableReminders() async {
-        _ = await reminderScheduler.requestAuthorizationIfNeeded()
     }
 }

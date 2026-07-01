@@ -169,8 +169,10 @@ private struct StatCard: View {
     }
 }
 
+#if DEBUG
 #Preview {
     NavigationStack {
         StatisticsView(dependencies: PreviewSupport.dependencies)
     }
 }
+#endif

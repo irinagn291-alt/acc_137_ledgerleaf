@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Container for the spec's 4-screen, value-first onboarding flow.
+/// Container for the spec's 3-screen, value-first onboarding flow.
 struct OnboardingView: View {
     let dependencies: AppDependencies
     let onFinish: () -> Void
@@ -22,10 +22,8 @@ struct OnboardingView: View {
                     .tag(0)
                 AddFirstSubscriptionStepView(viewModel: viewModel)
                     .tag(1)
-                LoadRevealStepView(viewModel: viewModel)
+                LoadRevealStepView(viewModel: viewModel, onFinish: onFinish)
                     .tag(2)
-                ReminderOptInStepView(viewModel: viewModel, onFinish: onFinish)
-                    .tag(3)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .indexViewStyle(.page(backgroundDisplayMode: .never))
@@ -163,9 +161,10 @@ private struct AddFirstSubscriptionStepView: View {
 
 private struct LoadRevealStepView: View {
     let viewModel: OnboardingViewModel
+    let onFinish: () -> Void
 
     var body: some View {
-        OnboardingScaffold(title: "See the load instantly", ctaTitle: "Next", isDisabled: false, action: viewModel.goToNextStep) {
+        OnboardingScaffold(title: "See the load instantly", ctaTitle: "Get Started", isDisabled: false, action: onFinish) {
             VStack(spacing: 16) {
                 Text(CurrencyFormatter.format(viewModel.monthlyTotal, currencyCode: "EUR"))
                     .font(.system(size: 44, weight: .bold))
@@ -196,49 +195,8 @@ private struct LoadRevealStepView: View {
     }
 }
 
-private struct ReminderOptInStepView: View {
-    @Bindable var viewModel: OnboardingViewModel
-    let onFinish: () -> Void
-
-    var body: some View {
-        VStack(spacing: 32) {
-            Spacer()
-
-            Image(systemName: "bell")
-                .font(.system(size: 64))
-                .foregroundStyle(AppColor.secondary.opacity(0.6))
-
-            Text("We'll remind you before charge")
-                .font(.title2.weight(.semibold))
-                .foregroundStyle(AppColor.text)
-
-            Toggle("Charge reminders", isOn: $viewModel.wantsReminders)
-                .padding(.horizontal, 32)
-                .tint(AppColor.primary)
-
-            Spacer()
-
-            Button {
-                Task {
-                    if viewModel.wantsReminders {
-                        await viewModel.enableReminders()
-                    }
-                    onFinish()
-                }
-            } label: {
-                Text("Get Started")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(AppColor.primary)
-            .padding(.horizontal, 24)
-            .padding(.bottom, 32)
-        }
-    }
-}
-
+#if DEBUG
 #Preview {
     OnboardingView(dependencies: PreviewSupport.dependencies, onFinish: {})
 }
+#endif

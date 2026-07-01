@@ -16,29 +16,25 @@ enum AppearanceMode: String, CaseIterable, Identifiable {
     }
 }
 
-/// Drives Settings: appearance, CSV export, reminder permission, and data reset.
+/// Drives Settings: appearance, CSV export, and data reset.
 @MainActor
 @Observable
 final class SettingsViewModel {
     var errorMessage: String?
     private(set) var exportURL: URL?
-    private(set) var notificationsAuthorized = false
     private(set) var subscriptionCount = 0
 
     private let fetchSubscriptions: FetchSubscriptionsUseCase
     private let exportCSV: ExportSubscriptionsCSVUseCase
-    private let reminderScheduler: ReminderScheduling
     private let seedSampleData: SeedSampleDataUseCase
 
     init(
         fetchSubscriptions: FetchSubscriptionsUseCase,
         exportCSV: ExportSubscriptionsCSVUseCase,
-        reminderScheduler: ReminderScheduling,
         seedSampleData: SeedSampleDataUseCase
     ) {
         self.fetchSubscriptions = fetchSubscriptions
         self.exportCSV = exportCSV
-        self.reminderScheduler = reminderScheduler
         self.seedSampleData = seedSampleData
     }
 
@@ -64,19 +60,5 @@ final class SettingsViewModel {
         } catch {
             errorMessage = error.localizedDescription
         }
-    }
-
-    func enableReminders() async -> Bool {
-        let granted = await reminderScheduler.requestAuthorizationIfNeeded()
-        notificationsAuthorized = granted
-        if !granted {
-            errorMessage = "Allow notifications in iOS Settings to receive reminders."
-        }
-        return granted
-    }
-
-    func disableReminders() async {
-        await reminderScheduler.cancelAllReminders()
-        notificationsAuthorized = false
     }
 }

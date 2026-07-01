@@ -1,18 +1,15 @@
 import Foundation
 
-/// Removes a subscription and cancels any pending reminder for it.
+/// Removes a subscription.
 @MainActor
 struct DeleteSubscriptionUseCase {
     private let repository: SubscriptionRepository
-    private let reminderScheduler: ReminderScheduling
 
-    init(repository: SubscriptionRepository, reminderScheduler: ReminderScheduling) {
+    init(repository: SubscriptionRepository) {
         self.repository = repository
-        self.reminderScheduler = reminderScheduler
     }
 
-    func execute(id: UUID) async throws {
+    func execute(id: UUID) throws {
         try repository.delete(id: id)
-        await reminderScheduler.cancelReminder(for: id)
     }
 }

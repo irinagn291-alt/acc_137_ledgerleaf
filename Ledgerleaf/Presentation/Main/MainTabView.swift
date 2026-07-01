@@ -16,6 +16,8 @@ struct MainTabView: View {
     }
 }
 
+#if DEBUG
 #Preview {
     MainTabView(dependencies: PreviewSupport.dependencies)
 }
+#endif

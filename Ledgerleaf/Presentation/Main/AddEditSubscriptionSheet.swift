@@ -29,7 +29,6 @@ struct AddEditSubscriptionSheet: View {
 
                 Section("Next charge") {
                     DatePicker("Date", selection: $viewModel.nextChargeDate, displayedComponents: .date)
-                    Toggle("Remind before charge", isOn: $viewModel.isReminderEnabled)
                 }
 
                 Section("Notes") {
@@ -81,9 +80,11 @@ struct AddEditSubscriptionSheet: View {
     }
 }
 
+#if DEBUG
 #Preview {
     AddEditSubscriptionSheet(
         viewModel: PreviewSupport.dependencies.makeAddEditSubscriptionViewModel(editing: nil),
         onSaved: {}
     )
 }
+#endif

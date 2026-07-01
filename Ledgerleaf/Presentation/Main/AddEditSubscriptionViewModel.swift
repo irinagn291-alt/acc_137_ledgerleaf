@@ -8,7 +8,6 @@ final class AddEditSubscriptionViewModel {
     var amountText: String
     var period: BillingPeriod
     var nextChargeDate: Date
-    var isReminderEnabled: Bool
     var notes: String
     var errorMessage: String?
     private(set) var isSaving = false
@@ -27,7 +26,6 @@ final class AddEditSubscriptionViewModel {
         self.amountText = editingSubscription.map { Self.format($0.amount) } ?? ""
         self.period = editingSubscription?.period ?? .monthly
         self.nextChargeDate = editingSubscription?.nextChargeDate ?? Calendar.current.date(byAdding: .month, value: 1, to: .now) ?? .now
-        self.isReminderEnabled = editingSubscription?.isReminderEnabled ?? true
         self.notes = editingSubscription?.notes ?? ""
         self.addSubscription = addSubscription
         self.updateSubscription = updateSubscription
@@ -59,16 +57,15 @@ final class AddEditSubscriptionViewModel {
             amount: amount,
             period: period,
             nextChargeDate: nextChargeDate,
-            isReminderEnabled: isReminderEnabled,
             notes: notes,
             createdAt: createdAt
         )
 
         do {
             if isEditing {
-                try await updateSubscription.execute(subscription)
+                try updateSubscription.execute(subscription)
             } else {
-                try await addSubscription.execute(subscription)
+                try addSubscription.execute(subscription)
                 HapticsService.totalIncremented()
             }
             return true

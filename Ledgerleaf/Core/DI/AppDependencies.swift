@@ -7,19 +7,17 @@ import SwiftData
 @MainActor
 final class AppDependencies {
     let subscriptionRepository: SubscriptionRepository
-    let reminderScheduler: ReminderScheduling
     private let csvExporter: SubscriptionCSVExporting
 
     init(modelContext: ModelContext) {
         self.subscriptionRepository = SwiftDataSubscriptionRepository(modelContext: modelContext)
-        self.reminderScheduler = UNNotificationReminderScheduler()
         self.csvExporter = SubscriptionCSVExporter()
     }
 
     func makeLeafListViewModel() -> LeafListViewModel {
         LeafListViewModel(
             fetchSubscriptions: FetchSubscriptionsUseCase(repository: subscriptionRepository),
-            deleteSubscription: DeleteSubscriptionUseCase(repository: subscriptionRepository, reminderScheduler: reminderScheduler),
+            deleteSubscription: DeleteSubscriptionUseCase(repository: subscriptionRepository),
             calculateTotals: CalculateTotalsUseCase(),
             upcomingCharges: UpcomingChargesUseCase(),
             calculateCancelSavings: CalculateCancelSavingsUseCase(),
@@ -30,8 +28,8 @@ final class AppDependencies {
     func makeAddEditSubscriptionViewModel(editing subscription: Subscription?) -> AddEditSubscriptionViewModel {
         AddEditSubscriptionViewModel(
             editingSubscription: subscription,
-            addSubscription: AddSubscriptionUseCase(repository: subscriptionRepository, reminderScheduler: reminderScheduler),
-            updateSubscription: UpdateSubscriptionUseCase(repository: subscriptionRepository, reminderScheduler: reminderScheduler)
+            addSubscription: AddSubscriptionUseCase(repository: subscriptionRepository),
+            updateSubscription: UpdateSubscriptionUseCase(repository: subscriptionRepository)
         )
     }
 
@@ -57,7 +55,6 @@ final class AppDependencies {
         SettingsViewModel(
             fetchSubscriptions: FetchSubscriptionsUseCase(repository: subscriptionRepository),
             exportCSV: ExportSubscriptionsCSVUseCase(exporter: csvExporter),
-            reminderScheduler: reminderScheduler,
             seedSampleData: SeedSampleDataUseCase(repository: subscriptionRepository)
         )
     }
@@ -65,8 +62,7 @@ final class AppDependencies {
     func makeOnboardingViewModel() -> OnboardingViewModel {
         OnboardingViewModel(
             fetchSubscriptions: FetchSubscriptionsUseCase(repository: subscriptionRepository),
-            addSubscription: AddSubscriptionUseCase(repository: subscriptionRepository, reminderScheduler: reminderScheduler),
-            reminderScheduler: reminderScheduler
+            addSubscription: AddSubscriptionUseCase(repository: subscriptionRepository)
         )
     }
 }
